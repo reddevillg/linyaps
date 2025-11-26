@@ -23,7 +23,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -DCMAKE_BUILD_TYPE=Release \
+          cmake -DCMAKE_BUILD_TYPE=Debug \
             -DCPM_LOCAL_PACKAGES_ONLY=ON \
             -DBUILD_SHARED_LIBS=OFF \
             ..
@@ -31,7 +31,7 @@ jobs:
           make -j$(nproc)
       - name: Run tests
         run: |
-          ./build/libs/linglong/tests/ll-tests/ll-tests
+          LINYAPS_BACKTRACE=1 LINYAPS_LOG_LEVEL=debug ./build/libs/linglong/tests/ll-tests/ll-tests
 
   ubuntu2204:
     name: ubuntu_22.04

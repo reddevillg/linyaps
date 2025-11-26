@@ -498,7 +498,7 @@ Cli::Cli(Printer &printer,
                       "TaskAdd",
                       this,
                       SLOT(onTaskAdded(QDBusObjectPath)))) {
-        qFatal("couldn't connect to package manager signal 'TaskAdded'");
+        LogE("couldn't connect to package manager signal 'TaskAdded'");
     }
 
     if (!conn.connect(pkgMan.service(),
@@ -507,7 +507,7 @@ Cli::Cli(Printer &printer,
                       "TaskRemoved",
                       this,
                       SLOT(onTaskRemoved(QDBusObjectPath, int, int, QString, double, int)))) {
-        qFatal("couldn't connect to package manager signal 'TaskRemoved'");
+        LogE("couldn't connect to package manager signal 'TaskRemoved'");
     }
 }
 
@@ -1404,6 +1404,8 @@ utils::error::Result<std::vector<api::types::v1::UpgradeListResult>> Cli::listUp
 {
     LINGLONG_TRACE("list upgradable");
 
+    LogD("list upgradable");
+
     // only applications can be upgraded
     auto upgradablePkgs = this->repository.upgradableApps();
     if (!upgradablePkgs) {
@@ -1417,6 +1419,7 @@ utils::error::Result<std::vector<api::types::v1::UpgradeListResult>> Cli::listUp
                                              .newVersion = pkg.second.reference.version.toString(),
                                              .oldVersion = pkg.first.version.toString() });
     }
+    LogD("list upgradable end");
     return upgradeList;
 }
 

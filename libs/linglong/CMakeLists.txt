@@ -116,7 +116,12 @@ pfl_add_library(
   tl::expected
   linglong::oci-cfg-generators
   CLI11::CLI11
-  ${YAML_CPP})
+  ${YAML_CPP}
+  -fsanitize=address
+  COMPILE_OPTIONS
+  PUBLIC
+  -fsanitize=address
+  )
 
 if(LINGLONG_ENABLE_WAYLAND_SEC_CTX_SUPPORT)
   # pkg_get_variable() cannot reliably get variables in a .pc file if those

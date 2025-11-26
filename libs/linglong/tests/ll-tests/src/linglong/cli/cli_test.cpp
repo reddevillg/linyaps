@@ -56,17 +56,25 @@ class CliTest : public ::testing::Test
 protected:
     void SetUp() override
     {
+        LogD("CliTest Setup 0");
         printer = std::make_unique<MockPrinter>();
+        LogD("CliTest Setup 1");
         tempDir = std::make_unique<TempDir>();
+        LogD("CliTest Setup 2");
         ociCLI = ocppi::cli::crun::Crun::New(tempDir->path()).value();
+        LogD("CliTest Setup 3");
         containerBuilder = std::make_unique<runtime::ContainerBuilder>(*ociCLI);
+        LogD("CliTest Setup 4");
         pkgMan =
           std::make_unique<api::dbus::v1::PackageManager>("",
                                                           "/org/deepin/linglong/PackageManager1",
                                                           QDBusConnection::sessionBus(),
                                                           nullptr);
+        LogD("CliTest Setup 5");
         repo = std::make_unique<MockRepo>(tempDir->path());
-        notifier = std::make_unique<cli::DummyNotifier>();
+        LogD("CliTest Setup 6");
+        auto notifier = std::make_unique<cli::DummyNotifier>();
+        LogD("CliTest Setup 7");
         cli = std::make_unique<cli::Cli>(*printer,
                                          *ociCLI,
                                          *containerBuilder,
@@ -74,6 +82,7 @@ protected:
                                          *repo,
                                          std::move(notifier),
                                          nullptr);
+        LogD("CliTest Setup 8");
     }
 
     void TearDown() override
@@ -84,7 +93,6 @@ protected:
         containerBuilder.reset();
         pkgMan.reset();
         repo.reset();
-        notifier.reset();
         cli.reset();
     }
 
@@ -94,12 +102,12 @@ protected:
     std::unique_ptr<runtime::ContainerBuilder> containerBuilder;
     std::unique_ptr<api::dbus::v1::PackageManager> pkgMan;
     std::unique_ptr<MockRepo> repo;
-    std::unique_ptr<cli::InteractiveNotifier> notifier;
     std::unique_ptr<cli::Cli> cli;
 };
 
 TEST_F(CliTest, listUpgradableOnlyApp)
 {
+    LogD("listUpgradableOnlyApp 1");
     EXPECT_CALL(*repo, listLocal())
       .WillOnce(Return(std::vector<api::types::v1::PackageInfoV2>{ api::types::v1::PackageInfoV2{
         .arch = std::vector<std::string>{ "x86_64" },
@@ -110,11 +118,13 @@ TEST_F(CliTest, listUpgradableOnlyApp)
         .version = "1.0.0",
       } }));
 
+    LogD("listUpgradableOnlyApp 2");
     EXPECT_CALL(*repo, latestRemoteReference(_))
       .WillOnce(Return(package::ReferenceWithRepo{
         .repo = api::types::v1::Repo{ .name = "repo1" },
         .reference = package::Reference::parse("main:id1/2.0.0/x86_64").value() }));
 
+    LogD("listUpgradableOnlyApp 3");
     EXPECT_CALL(*printer,
                 printUpgradeList(ElementsAre(api::types::v1::UpgradeListResult{
                   .id = "id1",
@@ -122,6 +132,8 @@ TEST_F(CliTest, listUpgradableOnlyApp)
                   .oldVersion = "1.0.0",
                 })))
       .WillOnce(Return());
+
+    LogD("listUpgradableOnlyApp 4");
     cli->list(cli::ListOptions{ .showUpgradeList = true });
 }
 

@@ -62,7 +62,11 @@ pfl_add_executable(
   GTest::gtest
   GTest::gmock
   linglong::linglong
-  PkgConfig::CRYPTO)
+  PkgConfig::CRYPTO
+  -fsanitize=address
+  COMPILE_OPTIONS
+  PRIVATE
+  -fsanitize=address)
 
 include(GoogleTest)
 get_real_target_name(tests linglong::linglong::ll-tests)

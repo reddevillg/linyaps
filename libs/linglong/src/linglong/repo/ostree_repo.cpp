@@ -3144,6 +3144,8 @@ OSTreeRepo::upgradableApps() const noexcept
 {
     LINGLONG_TRACE("get upgradable apps");
 
+    LogD("get upgradable apps");
+
     auto appPkgs = this->listLocalApps();
     if (!appPkgs) {
         return LINGLONG_ERR(appPkgs);
@@ -3162,6 +3164,7 @@ OSTreeRepo::upgradableApps() const noexcept
             continue;
         }
 
+        LogD("upgradable apps fuzzy: {}", fuzzy->toString());
         auto remoteRef = this->latestRemoteReference(*fuzzy);
         if (!remoteRef) {
             LogD("Failed to find remote latest reference: {}", remoteRef.error());
@@ -3179,6 +3182,7 @@ OSTreeRepo::upgradableApps() const noexcept
               std::make_pair(std::move(localRef).value(), std::move(remoteRef).value()));
         }
     }
+    LogD("get upgradable apps end");
     return upgradeList;
 }
 
